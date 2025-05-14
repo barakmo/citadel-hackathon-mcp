@@ -12,6 +12,18 @@ def register_accesstemplates_all_resource(mcp: FastMCP):
     @mcp.resource("accesstemplates://all")
     def get_all_accesstemplates():
         """Get a list of all access templates."""
-        # Note: The API doesn't have a specific endpoint to get all access templates
-        logger.error("Endpoint to get all access templates is not implemented")
-        return None
+        try:
+            # Fetch all access templates from the API
+            response = get("/entities/access-template")
+
+            # If we got a response, return it
+            if response and isinstance(response, list):
+                return {"accesstemplates": response}
+
+            # Log error and return None if no response is received
+            logger.error("No valid response received for all access templates")
+            return None
+        except Exception as e:
+            # Log the error and return None
+            logger.error(f"Error fetching all access templates: {e}")
+            return None

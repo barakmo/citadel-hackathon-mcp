@@ -12,6 +12,18 @@ def register_permissions_all_resource(mcp: FastMCP):
     @mcp.resource("permissions://all")
     def get_all_permissions():
         """Get a list of all permissions."""
-        # Note: The API doesn't have a specific endpoint to get all permissions
-        logger.error("Endpoint to get all permissions is not implemented")
-        return None
+        try:
+            # Fetch all permissions from the API
+            response = get("/entities/permission")
+
+            # If we got a response, return it
+            if response and isinstance(response, list):
+                return {"permissions": response}
+
+            # Log error and return None if no response is received
+            logger.error("No valid response received for all permissions")
+            return None
+        except Exception as e:
+            # Log the error and return None
+            logger.error(f"Error fetching all permissions: {e}")
+            return None
