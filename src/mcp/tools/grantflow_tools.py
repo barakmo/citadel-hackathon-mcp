@@ -91,3 +91,36 @@ def register_grantflow_tools(mcp: FastMCP):
             # Log the error and return a fallback message
             print(f"Error deleting grant flow {id}: {e}")
             return {"message": f"Error deleting grant flow {id}: {e}"}
+
+    @mcp.tool()
+    def start_grant_flow(id: str, user_id: str, permission_id: str) -> dict:
+        """Start a grant flow.
+
+        Args:
+            id: The ID of the grant flow to start.
+            user_id: The ID of the user initiating the grant flow.
+            permission_id: The ID of the permission to grant to the user.
+
+        Returns:
+            A dictionary with a success message.
+        """
+        try:
+            # Create request data, only including fields that are provided
+            request_data = {}
+            if user_id:
+                request_data["userId"] = user_id
+            if permission_id:
+                request_data["permissionId"] = int(permission_id)
+
+            # Call the API to start the grant flow
+            response = post(f"/entities/grant-flow/{id}/start", request_data)
+
+            if response:
+                return {"message": f"Grant flow {id} started", "grantflow": response}
+
+            # Fallback message if the API call doesn't return data
+            return {"message": f"Grant flow {id} started"}
+        except Exception as e:
+            # Log the error and return a fallback message
+            print(f"Error starting grant flow {id}: {e}")
+            return {"message": f"Error starting grant flow {id}: {e}"}
